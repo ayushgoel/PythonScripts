@@ -8,8 +8,11 @@ import thread
 product = []
 
 def producer(lock, produce_time, lim, *args):
+
     pr_val = 0
+
     while True:
+
         print "Producing.."
         time.sleep(produce_time)
         print "Produced {}".format(pr_val)
@@ -20,12 +23,14 @@ def producer(lock, produce_time, lim, *args):
         print "Added product {}".format(pr_val)
         lock.release_lock()
         print "P: Release ACK"
-        
+
         pr_val += 1
+
         if pr_val > lim:
             break
 
 def consumer(lock, consume_time, waiting_time, lim, *args):
+
     con_val = 0
     got_product = False
 
@@ -33,6 +38,7 @@ def consumer(lock, consume_time, waiting_time, lim, *args):
 
         lock.acquire_lock()
         print "C: Lock ACK"
+
         try:
             con_val = product.pop()
             print "Retrieved value {}".format(con_val)
@@ -40,6 +46,7 @@ def consumer(lock, consume_time, waiting_time, lim, *args):
         except IndexError:
             print "No produce!"
             got_product = False
+
         lock.release_lock()
         print "C: Release ACK"
 
@@ -49,10 +56,10 @@ def consumer(lock, consume_time, waiting_time, lim, *args):
         else:
             print "Waiting for produce"
             time.sleep(waiting_time)
-            
+
         if con_val == lim:
             break
-        
+
 if __name__=="__main__":
 
     lock=thread.allocate_lock()
