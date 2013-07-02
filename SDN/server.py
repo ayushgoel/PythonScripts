@@ -13,6 +13,11 @@ print "Server started... port : ", port
 
 while True:
   c, addr = s.accept()
-  print "Got connectionf from ", c, addr
+  print "Got connection from ", c, addr
   c.send("Thank you for connecting")
+  while True:
+    data = c.recv(1024)
+    print data
+    if not data: break
+    c.send("Recieved :" + str(data))
   c.close()
