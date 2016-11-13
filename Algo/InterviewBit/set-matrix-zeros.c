@@ -1,3 +1,8 @@
+// https://www.interviewbit.com/problems/set-matrix-zeros/
+
+#include <stdio.h>
+#include <stdlib.h>
+
 /**
  * @input A : 2D integer array
  * @input n11 : Integer array's ( A ) rows
@@ -6,32 +11,64 @@
  * @Output Void. Just modifies the args passed by reference
  */
 void setZeroes(int** A, int r, int c) {
-    int *r0=malloc(r*c*sizeof(int));
-    int *c0=malloc(r*c*sizeof(int));
-    int rc = 0, cc = 0, zeroes = 0;
     int i,j;
+    int **zeroes = (int **)malloc(r * sizeof(int *));
+    for (i=0; i<r; i++)
+         zeroes[i] = (int *)malloc(c * sizeof(int));
+
     for (i = 0; i < r; ++i)
     {
         for (j = 0; j < c; ++j)
         {
             if (A[i][j] == 0)
             {
-                r0[rc++] = i;
-                c0[cc++] = j;
-                zeroes++;
+                zeroes[i][j] = 1;
+            } else
+            {
+                zeroes[i][j] = 0;
             }
         }
     }
-    int k;
-    for (k = 0; k < zeroes; ++k)
+    for (i = 0; i < r; ++i)
     {
-        for (i = 0; i < r; ++i)
+        for (j = 0; j < c; ++j)
         {
-            A[i][c0[k]] = 0;
-        }
-        for (i = 0; i < c; ++i)
-        {
-            A[r0[k]][i] = 0;
+            if (zeroes[i][j] == 1)
+            {
+                int k;
+                for (k = 0; k < r; ++k)
+                {
+                    // printf("T %d %d\n", k, j);
+                    A[k][j] = 0;
+                }
+                for (k = 0; k < c; ++k)
+                {
+                    // printf("U %d %d\n", i, k);
+                    A[i][k] = 0;
+                }
+            }
+
         }
     }
+}
+
+int main(int argc, char const *argv[])
+{
+    int r=2,c=2,i,j;
+    int **zeroes = (int **)malloc(r * sizeof(int *));
+    for (i=0; i<r; i++)
+         zeroes[i] = (int *)malloc(c * sizeof(int));
+     zeroes[0][1] = 1;
+     zeroes[1][0] = 1;
+     zeroes[1][1] = 1;
+    setZeroes(zeroes, r,c);
+    for (i = 0; i < r; ++i)
+    {
+        for (j = 0; j < c; ++j)
+        {
+            printf("%d ", zeroes[i][j]);
+        }
+        printf("\n");
+    }
+    return 0;
 }
