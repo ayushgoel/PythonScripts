@@ -29,6 +29,30 @@
 
 // Time limit exceeded
 
+// @implementation Solution
+//     -(NSMutableArray *)prevSmaller:(NSMutableArray *)input  {
+//         NSNumber *minus1 = [NSNumber numberWithInteger:-1];
+//         // NSMutableArray *ans = [NSMutableArray arrayWithCapacity:input.count];
+//         NSMutableArray *ans = [NSMutableArray new];
+//         for (int i = 0; i < input.count; ++i)
+//         {
+//             [ans addObject:minus1];
+//             // [ans replaceObjectAtIndex:i withObject:minus1];
+//         }
+//         for (int i = 0; i < input.count; ++i)
+//         {
+//             for (int j = (i + 1); j < input.count; ++j)
+//             {
+//                 if ([[input objectAtIndex:i] integerValue]
+//                     < [[input objectAtIndex:j] integerValue]) {
+//                     [ans replaceObjectAtIndex:j withObject:[input objectAtIndex:i]];
+//                 }
+//             }
+//         }
+//         return ans;
+//     }
+// @end
+
 @implementation Solution
     -(NSMutableArray *)prevSmaller:(NSMutableArray *)input  {
         NSNumber *minus1 = [NSNumber numberWithInteger:-1];
