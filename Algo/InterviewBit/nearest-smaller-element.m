@@ -56,27 +56,25 @@
 @implementation Solution
     -(NSMutableArray *)prevSmaller:(NSMutableArray *)input  {
         NSNumber *minus1 = [NSNumber numberWithInteger:-1];
-        // NSMutableArray *ans = [NSMutableArray arrayWithCapacity:input.count];
         NSMutableArray *ans = [NSMutableArray new];
-        for (int i = 0; i < input.count; ++i)
+        NSMutableArray *stack = [NSMutableArray new];
+        [stack addObject:minus1];
+        [stack addObject:[input objectAtIndex:0]];
+        [ans addObject:minus1];
+        for (int i = 1; i < input.count; ++i)
         {
-            [ans addObject:minus1];
-            // [ans replaceObjectAtIndex:i withObject:minus1];
-        }
-        for (int i = 0; i < input.count; ++i)
-        {
-            for (int j = (i + 1); j < input.count; ++j)
-            {
-                if ([[input objectAtIndex:i] integerValue]
-                    < [[input objectAtIndex:j] integerValue]) {
-                    [ans replaceObjectAtIndex:j withObject:[input objectAtIndex:i]];
-                }
+            NSNumber *current = [input objectAtIndex:i];
+            while([[stack objectAtIndex:stack.count-1] integerValue] >= [current integerValue]
+                && [[stack objectAtIndex:stack.count-1] integerValue] != -1) {
+                [stack removeLastObject];
             }
+            NSNumber *top_stack = [stack objectAtIndex:stack.count-1];
+            [ans addObject:top_stack];
+            [stack addObject: current];
         }
         return ans;
     }
 @end
-
 
 int main(int argc, char const *argv[])
 {
