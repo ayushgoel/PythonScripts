@@ -20,6 +20,32 @@ void print_grid(char **x, int l) {
     }
 }
 
+void add_solution(char ***all_sols, int *sol_len, char **board, int n) {
+    char **sol = malloc(n * sizeof(char *));
+    int j;
+    for (j = 0; j < n; ++j)
+    {
+        sol[j] = malloc((n+1) * sizeof(char));
+        sol[j][n] = '\0';
+    }
+    int i;
+    for (i = 0; i < n; ++i)
+    {
+        for (j = 0; j < n; ++j)
+        {
+            if (board[i][j] == 'Q')
+            {
+                sol[i][j] = board[i][j];
+            } else {
+                sol[i][j] = '.';
+            }
+        }
+    }
+    all_sols[*sol_len] = sol;
+    *sol_len = *sol_len + 1;
+
+}
+
 int check_diagnols(char **board, int row, int col, int current_row, int current_col) {
     int i, j;
     for (i = current_row+1, j = current_col+1; i < row && j< col; ++i, ++j) {
@@ -96,7 +122,7 @@ int isSolution(char **board, int l) {
     return isPartialSolution(board, l, l);
 }
 
-int solve(char **board, int l, int pos) {
+int solve(char ***all_sols, int *sol_len, char **board, int l, int pos) {
     printf("S %d\n", pos);
     if (pos == l)
     {
@@ -118,37 +144,28 @@ int solve(char **board, int l, int pos) {
         if (isPartialSolution(board, pos+1, l))
         {
             printf("Partially correct\n");
-            int x = solve(board, l, pos+1);
+            int x = solve(all_sols, sol_len, board, l, pos+1);
             if (x == 1)
             {
-                return x;
+                add_solution(all_sols, sol_len, board, l);
+                printf("ADDED Solution\n");
             }
-        } else {
-            board[pos][i] = '.';
         }
+        board[pos][i] = '.';
     }
     return 0;
 }
 
-char **find_solution(int n, int i) {
+char **find_solution(char ***all_sols, int *sol_len, int n, int i) {
     printf("FS %d\n", i);
     char **sol = malloc(n * sizeof(char *));
     int j;
     for (j = 0; j < n; ++j)
     {
         sol[j] = malloc((n+1) * sizeof(char));
-        sol[j][n] = '\0';
-    }
-    int x;
-    for (x = 0; x < n; ++x)
-    {
-        for (j = 0; j < n; ++j)
-        {
-            sol[x][j] = '.';
-        }
     }
     sol[0][i] = 'Q';
-    int solved = solve(sol, n, 1);
+    int solved = solve(all_sols, sol_len, sol, n, 1);
     if (solved == 1) {
         return sol;
     } else {
@@ -165,14 +182,14 @@ char **find_solution(int n, int i) {
  */
 char*** solveNQueens(int A, int *number_of_solutions, int *size_of_grid) {
     *size_of_grid = A;
-    char ***ans = malloc(A * sizeof(char **));
+    char ***ans = malloc(A*A * sizeof(char **));
     *number_of_solutions = 0;
 
     int i;
     for (i = 0; i < A; ++i)
     {
-        char **ansi = find_solution(A, i);
-        if (ansi != NULL)
+        char **ansi = find_solution(ans, number_of_solutions, A, i);
+        if (ansi != NULL && A == 1)
         {
             printf("We have a solution!\n");
             ans[*number_of_solutions] = ansi;
@@ -188,7 +205,7 @@ int main(int argc, char const *argv[])
 {
     int number_of_solutions;
     int size_of_grid;
-    int size = 5;
+    int size = 1;
     char ***ans = solveNQueens(size, &number_of_solutions, &size_of_grid);
     printf("ANSWER\n");
     for (int i = 0; i < number_of_solutions; ++i)
