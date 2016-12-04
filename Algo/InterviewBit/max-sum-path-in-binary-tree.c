@@ -31,8 +31,16 @@ typedef struct MyNode mynode;
 
 mynode *mynode_new(int val1, int val2) {
   mynode* node = (mynode *)malloc(sizeof(mynode));
+
+  // This value is the maximum sum attained by extending either the left or right subtree
+  // (or by not extending at all). Thus when dp is calculating the max, it can use this
+  // value to extend it's path.
   node->val1 = val1;
+
+  // This value keeps track of the path that can be created by adjoining the left and right
+  // subtree.
   node->val2 = val2;
+
   node->left = NULL;
   node->right = NULL;
   return node;
@@ -53,9 +61,9 @@ mynode * fillDP(treenode *t) {
     mynode *n = mynode_new(t->val, t->val);
     if (leftDP != NULL && rightDP != NULL)
     {
-        int v = max(0, (max(leftDP ->val1, rightDP -> val1)));
+        int v = max(0, (max(leftDP ->val1, rightDP -> val1))); // Extend left/right or do not use any and create new path(0).
         n->val1 += v;
-        n->val2 += leftDP->val1 + rightDP->val1;
+        n->val2 += leftDP->val1 + rightDP->val1; // Join left and right subtree.
     } else if (leftDP != NULL)
     {
         n->val1 += max(0, leftDP->val1);
@@ -77,7 +85,7 @@ int findMaxInTree(mynode *t) { // when extending child
         if (t->right != NULL)
         {
             int rightMax = findMaxInTree(t->right);
-            return max(t->val2, max(t->val1, max(leftMax, rightMax)));
+            return max(t->val2, max(t->val1, max(leftMax, rightMax))); // Maximum of left subtree, right subtree and own's val1 and val2.
         }
         return max(t->val2, max(t->val1, leftMax));
     } else if (t->right != NULL)
