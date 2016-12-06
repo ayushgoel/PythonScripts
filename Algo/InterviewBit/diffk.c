@@ -13,10 +13,11 @@ int diffPossible(int* a, int n, int b) {
     int i1 = 0, i2 = 0;
     while (1) {
         // printf("X %d %d\n", i1, i2);
-        if (i1 == i2 && i2 == n-1) {
+        if (i1 == n || i2 == n) {
             return 0;
         }
         if (a[i2] - a[i1] == b && i2 != i1) {
+            // printf("Answer %d %d\n", a[i2], a[i1]);
             return 1;
         }
         if (a[i2] - a[i1] > b) {
