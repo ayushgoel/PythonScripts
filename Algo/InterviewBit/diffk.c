@@ -25,11 +25,6 @@ int diffPossible(int* a, int n, int b) {
         } else {
             i2++;
         }
-        // if (a[i2] - a[i1 + 1] == b) {
-        //     return 1;
-        // }
-        // i2--;
-        // i1++;
     }
 }
 
