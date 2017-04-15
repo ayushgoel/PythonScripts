@@ -1,45 +1,31 @@
 # https://www.interviewbit.com/problems/n-digit-numbers-with-digit-sum-s/
 
 class Solution:
-    def rsolve(self, number_of_digits, required_sum, include_0):
-        if self.cache.has_key((number_of_digits, required_sum, include_0)):
-            return self.cache[(number_of_digits, required_sum, include_0)];
-        # print number_of_digits, required_sum, include_0
-        if required_sum < 0:
-            #print "1"
-            return 0
-        if number_of_digits < 1:
-            #print "2"
-            return 0
-        if number_of_digits == 1 and required_sum == 0:
-            if include_0:
-                #print "3"
-                return 1
-            #print "4"
-            return 0
-        if number_of_digits == 1 and required_sum < 10:
-            #print "5"
-            return 1
-        ans = 0
-        if include_0:
-            ans += self.rsolve(number_of_digits - 1, required_sum, True)
-        for i in xrange(1,10):
-            ans += self.rsolve(number_of_digits - 1, required_sum - i, True)
-        # print "In", number_of_digits, required_sum, include_0
-        ans = ans % 1000000007
-        # print "Ans", ans
-        self.cache[(number_of_digits, required_sum, include_0)] = ans
-        return ans
-
     # @param A : integer
     # @param B : integer
     # @return an integer
-    def solve(self, A, B):
-        self.cache = {}
-        return self.rsolve(A, B, False)
+    def solve(self, number_of_digits, required_sum):
+        grid = [
+            [0 for i in xrange(required_sum + 1)],
+            # Any number greater than 9 requires 2 digits and thus has 0 ways.
+            [1 for i in xrange(10)] + [0 for i in xrange(required_sum - 9)]
+        ]
+        for n in xrange(2, number_of_digits):
+            row = []
+            for i in xrange(required_sum + 1):
+                current = 0
+                for j in xrange(min(i + 1, 10)):
+                    current += grid[n-1][i-j]
+                row += [current]
+            grid += [row]
+        ans = 0
+        for j in xrange(1, min(10, required_sum + 1)):
+            ans += grid[number_of_digits-1][required_sum-j]
+        return ans % 1000000007
+
+
 
 s = Solution()
-print s.solve(20, 40)
-
+assert(s.solve(75, 22) == 478432066)
 assert(s.solve(2, 4) == 4)
 assert(s.solve(3, 5) == 15)
