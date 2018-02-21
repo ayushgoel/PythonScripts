@@ -1,41 +1,32 @@
 class Solution(object):
-    def twoSum(self, nums, s):
-        if len(nums) < 2:
-            return []
-        i = 0
-        j = len(nums) - 1
-        ans = []
-        while i < j:
-            # print i, j, s, nums
-            sumx = nums[i] + nums[j]
-            if sumx == s:
-                ans += [[nums[i], nums[j]]] # handle case of repeated numbers
-                t = nums[i]
-                while i < len(nums) and nums[i] == t:
-                    i += 1
-            elif sumx > s:
-                j -= 1
-            else:
-                i += 1
-        return ans
-
     def threeSum(self, nums):
         """
         :type nums: List[int]
         :rtype: List[List[int]]
         """
         nums = sorted(nums)
+        num_len = len(nums)
         ans = []
-        for i in xrange(len(nums)):
+        for i in xrange(len(nums)-2):
             a1 = nums[i]
             if a1 > 0:
                 break
             if i > 0 and a1 == nums[i-1]:
                 continue
-            all_ans = self.twoSum(nums[i+1:], -a1)
-            # print "T", all_ans
-            for j in all_ans:
-                ans += [[a1, j[0], j[1]]]
+            l = i+1
+            r = num_len - 1
+            while l < r:
+                # print i, j, s, nums
+                sumx = nums[l] + nums[r]
+                if sumx == -a1:
+                    ans += [[a1, nums[l], nums[r]]]
+                    t = nums[l]
+                    while l < r and nums[l] == t:
+                        l += 1
+                elif sumx > -a1:
+                    r -= 1
+                else:
+                    l += 1
         return ans
 
 s = Solution()
