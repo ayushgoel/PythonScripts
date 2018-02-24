@@ -36,6 +36,22 @@ def maximumPackages(S, K, R, C):
         # delete lens with copies 0
     return ans
 
-
 if __name__ == '__main__':
-    print(maximumPackages([1,2],[1,3],[1,2],[1,1]))
+    f = open(os.environ['OUTPUT_PATH'], 'w')
+
+    nm = raw_input().split()
+    n = int(nm[0])
+    m = int(nm[1])
+
+    S = map(int, raw_input().rstrip().split())
+    K = map(int, raw_input().rstrip().split())
+    R = map(int, raw_input().rstrip().split())
+    C = map(int, raw_input().rstrip().split())
+
+    result = maximumPackages(S, K, R, C)
+    f.write(str(result) + "\n")
+    f.close()
+
+
+# if __name__ == '__main__':
+#     print(maximumPackages([1,2],[1,3],[1,2],[1,1]))
