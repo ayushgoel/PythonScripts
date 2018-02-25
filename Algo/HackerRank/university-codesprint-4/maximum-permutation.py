@@ -1,24 +1,28 @@
 #!/bin/python
 
-# from __future__ import print_function
+from __future__ import print_function
 
 import os
 import sys
 
 
 # Complete the function below.
-from collections import defaultdict
 
 def createCounter(s):
-    d=defaultdict(int)
+    d=[0] * 26
     for i in s:
-        d[i] += 1
+        d[ord(i)-ord('a')] += 1
     return d
 
+def update(d, key):
+    if d.has_key(key):
+        d[key] += 1
+    else:
+        d[key] = 1
 
 def maximumPermutation(w, s):
     # Return the string representing the answer.
-    ans = defaultdict(int)
+    ans = {}
 
     wLen = len(w)
     wCounter = createCounter(w)
@@ -26,7 +30,7 @@ def maximumPermutation(w, s):
     sCounter = createCounter(stri)
 
     if sCounter == wCounter:
-        ans[stri] += 1
+        update(ans, stri)
         maxAns = stri
         maxC = 1
     else:
@@ -36,13 +40,14 @@ def maximumPermutation(w, s):
     for i in xrange(1, len(s)-len(w) + 1):
         # print stri, ans
         stri = s[i:i+wLen]
-        sCounter[s[i-1]] -=1
-        sCounter[s[i+wLen-1]] +=1
-        if sCounter[s[i-1]] == 0:
-            del sCounter[s[i-1]]
+        prev_char_index=ord(s[i-1])-ord('a')
+        next_char_index=ord(stri[-1])-ord('a')
+        sCounter[prev_char_index] -=1
+        sCounter[next_char_index] +=1
+        # print(prev_char_index, next_char_index)
         # print "T", sCounter, wCounter
         if sCounter == wCounter:
-            ans[stri] += 1
+            update(ans, stri)
             if ans[stri] > maxC:
                 maxAns = stri
                 maxC = ans[stri]
@@ -52,7 +57,7 @@ def maximumPermutation(w, s):
     return maxAns
 
 if __name__ == '__main__':
-    print(maximumPermutation("asd", "wasdesasdasxdas"))
+    print(maximumPermutation("asdw", "wasdesaswdasxdaswd"))
 
 # if __name__ == '__main__':
 #     f = open(os.environ['OUTPUT_PATH'], 'w')
