@@ -1,82 +1,51 @@
-class Solution(object):
-    def chars_needed(self, d1, d2):
-        """
-            Check if d2 has all keys listed in d1
-        """
-        t={}
-        for k,v in d1.iteritems():
-            if (not d2.has_key(k)) or d2[k] < d1[k]:
+class Solution:
+
+    def contains_all(self, small, big):
+        for k in small:
+            if k not in big or big[k] < small[k]:
                 return False
-            else:
-                m = d2[k] - d1[k]
-                if m > 0:
-                    t[k] = m
-        return t
+        return True
 
-    def minWindow(self, s, t):
-        """
-        :type s: str
-        :type t: str
-        :rtype: str
-        """
-        tplaces = {}
+    def minWindow(self, st: str, t: str) -> str:
+        d = {}
         for i in t:
-            if tplaces.has_key(i):
-                tplaces[i] += 1
+            if i in d:
+                d[i] += 1
             else:
-                tplaces[i] = 1
-
-        all_chars = []
-        for index, ch in enumerate(s):
-            if tplaces.has_key(ch):
-                all_chars.append((index, ch))
-        ans = None
-        window = {}
-        iter_chars = all_chars[:]
-        #print iter_chars
-        for t in iter_chars:
-            i = t[1]
-            if window.has_key(i):
-                window[i] += 1
-            else:
-                window[i] = 1
-            diff = self.chars_needed(tplaces, window)
-            if diff is not False:
-                #print "S", diff, window, t, ans
-                if ans is None:
-                    #print "Q", t[0], all_chars[0]
-                    ans = s[all_chars[0][0]:t[0]+1]
+                d[i] = 1
+        
+        s = 0
+        e = 0
+        dd = {}
+        found = False
+        ans = st
+        while e != len(st):
+            if not self.contains_all(d, dd):
+                if st[e] in dd:
+                    dd[st[e]] += 1
                 else:
-                    if t[0] - all_chars[0][0] < len(ans):
-                        ans = s[all_chars[0][0]:t[0]+1]
-
-                while diff is not False:
-                    rem = all_chars[0]
-                    if diff.has_key(rem[1]):
-                        diff[rem[1]] -= 1
-                        if diff[rem[1]] == 0:
-                            del diff[rem[1]]
-                    else:
-                        diff = False
-                    window[rem[1]] -= 1
-                    if window[rem[1]] == 0:
-                        del window[rem[1]]
-                    all_chars = all_chars[1:]
-                    # diff = self.chars_needed(tplaces, window)
-                    #print "T", diff, window, t, ans
-                    if diff is not False:
-                        if ans is None:
-                            #print "R", t[0], all_chars[0]
-                            ans = s[all_chars[0][0]:t[0]+1]
-                        else:
-                            if t[0] - all_chars[0][0] < len(ans):
-                                ans = s[all_chars[0][0]:t[0]+1]
-        if ans is None:
-            ans = ""
+                    dd[st[e]] = 1
+                e += 1
+            
+            while self.contains_all(d, dd):
+                # print("Q", s, e)
+                if len(ans) >= len(st[s:e]):
+                    found = True
+                    ans = st[s:e]
+                dd[st[s]] -= 1
+                if dd[st[s]] == 0:
+                    del dd[st[s]]
+                s += 1
+        if not found:
+            ans = ''
         return ans
 
+
 s = Solution()
-print s.minWindow("ADOBECODEBANC", "ABC")
-print s.minWindow("ADOBECODEBANC", "ABCQ")
-print s.minWindow("ADOBECODEBANC", "AB")
-print s.minWindow("ADOBECODEBANC", "DN")
+print(s.minWindow("ADOBECODEBANC", "ABC"))
+assert(s.minWindow("ADOBECODEBANC", "ABC") == 'BANC')
+# ADOBE CODEB ANC
+
+assert(s.minWindow("ADOBECODEBANC", "ABCQ") == '')
+assert(s.minWindow("ADOBECODEBANC", "AB") == 'BA')
+assert(s.minWindow("A", "A") == 'A')
