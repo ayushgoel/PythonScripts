@@ -2,26 +2,34 @@
 
 class Solution:
 
-    def max3(self, a):
-        ans = a[0] * a[1] * a[2]
-        for i in xrange(len(a)):
-            for j in xrange(i+1, len(a)):
-                for k in xrange(j+1, len(a)):
-                    if a[i] * a[j] * a[k] > ans:
-                        ans = a[i] * a[j] * a[k]
-        return ans
-
     # @param A : list of integers
     # @return an integer
     def maxp3(self, a):
         if len(a) < 3:
             return 0
-        a.sort()
-        max3 = a[-3:]
-        low_index = len(a) - 3
-        low3 = a[:low_index]
-        # print low3, max3
-        return self.max3(low3+max3)
+        ans = None
+        b = []
+        for i in a:
+            if i == 0:
+                ans = 0
+            else:
+                b.append(i)
+
+        if len(b) < 3:
+            return 0
+
+        b.sort()
+
+        if ans is None:
+            ans = b[0] * b[1] * b[2]
+        ans = max(ans, b[0] * b[1] * b[-1])
+        ans = max(ans, b[-3] * b[-1] * b[-2])
+
+        print(ans)
+        return ans
+
 
 s = Solution()
-print(s.maxp3([-5,-2,1,2,3,4]))
+print(s.maxp3([-5,-2,1,2,3,4,8,10,-4]))
+assert(s.maxp3([-5,-2,1,2,3,4]) == 40)
+assert(s.maxp3([ 0, -1, 3, 100, 70, 50 ]) == 350000)
