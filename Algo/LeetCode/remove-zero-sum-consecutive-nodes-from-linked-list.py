@@ -1,75 +1,60 @@
 # Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
 
 class Solution:
-    def find_zero_sum(self,ll):
-        s = set() 
-  
-        # traverse through array  
-        # and store prefix sums  
-        sum = 0
-        for i in range(len(ll)): 
-            sum += arr[i] 
 
-            # If prefix sum is 0 or  
-            # it is already present  
-            if sum == 0 or sum in s: 
-                return True
-            s.add(sum) 
-          
-        return ll
+    def removeZeroSum(self, head: ListNode):
+        prefix_sum = {}
+        cur_sum = 0
+        p = head
 
-
-    def find_ans(self,ll):
-        print(ll)
-        for i in range(len(ll)):
-            if ll[i] < 0:
-                t = i+1
-                s = ll[i]
-                while t < len(ll):# and s < 0:
-                    s += ll[t]
-                    if s == 0:
-                        new_ll = ll[:i]+ll[t+1:]
-                        return self.find_ans(new_ll)
-                    t += 1
-                
-                t = i-1
-                s = ll[i]
-                while t >= 0:# and s < 0:
-                    s += ll[t]
-                    if s == 0:
-                        new_ll = ll[:t]+ll[i+1:]
-                        return self.find_ans(new_ll)
-                    t -= 1
-        return ll
+        while p is not None:
+            cur_sum += p.val
+            if cur_sum == 0:
+                return self.removeZeroSum(p.next)
+            if cur_sum in prefix_sum: # found 0
+                prefix_sum[cur_sum].next = p.next
+                return self.removeZeroSum(head)
+            else:
+                prefix_sum[cur_sum] = p
+            p = p.next
+        return head
 
     def removeZeroSumSublists(self, head: ListNode) -> ListNode:
-        x = []
-        y=head
-        while y != None:
-            x.append(y.val)
-            y = y.next
-        m = self.find_ans([i for i in x if i != 0])
-        if len(m) == 0:
-            return None
-        # print(m)
-        nh = head
-        while nh != None:
-            if nh.val == m[0]:
-                break
-            nh = nh.next
-        y = nh
-        ind = 1
-        while y != None and ind < len(m):
-            if y.next.val == m[ind]:
-                ind += 1
-                y = y.next
-            else:
-                y.next = y.next.next
-        y.next=None
-        return nh
-            
-            
+        return self.removeZeroSum(head)
+
+
+def printL(h):
+    while h is not None:
+        print(h.val, end = " -> ")
+        h = h.next
+    print()
+
+def make(arr):
+    h = ListNode(arr[0])
+    p = h
+    for x in range(1, len(arr)):
+        p.next = ListNode(arr[x])
+        p = p.next
+    return h
+
+s = Solution()
+
+def t1(arr):
+    x = make(arr)
+    printL(x)
+    y = s.removeZeroSumSublists(x)
+    printL(y)
+
+t1([1,0,0,-1,2,-1,0])
+# 1 1 1 0 2 1 1
+t1([1,2,-3,3,1])
+t1([1,2,-2])
+t1([0,2,-2])
+t1([1,2,-3])
+t1([1,2,3,-3,-2])
+t1([1,3,2,-3,-2,5,5,-5,1])
+#   1 4 6 3 1 6 11 6 1
